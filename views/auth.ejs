@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('layouts/header'); -%>
+    </head>
+    <body>
+        
+        <%- include('layouts/navbar', { loggedIn, userType }); -%>
+
+        
+        <header class="masthead" style="background-image: url('img/login.jpg')">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="page-heading">
+                            <h1>Login / Signup</h1>
+                            <span class="subheading">Welcome to the Driver Test Portal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        
+        <div class="container mt-5">
+            <% if (error) { %>
+                <div class="alert alert-danger text-center">
+                    <%= error %>
+                </div>
+            <% } %>
+            <% if (success) { %>
+                <div class="alert alert-success text-center">
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="authTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link <%= !showSignupForm ? 'active' : '' %>" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="<%= !showSignupForm %>">Login</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link <%= showSignupForm ? 'active' : '' %>" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab" aria-controls="signup" aria-selected="<%= showSignupForm %>">Signup</button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="authTabsContent">
+                                
+                                <div class="tab-pane fade <%= !showSignupForm ? 'show active' : '' %>" id="login" role="tabpanel" aria-labelledby="login-tab">
+                                    <form id="loginForm" action="/auth/login" method="POST">
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="loginUsername" name="username" type="text" placeholder="Enter your username..." required />
+                                            <label for="loginUsername">Username</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="loginPassword" name="password" type="password" placeholder="Enter your password..." required />
+                                            <label for="loginPassword">Password</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <select class="form-control" id="loginUserType" name="userType" required>
+                                                <option value="Driver">Driver</option>
+                                                <option value="Examiner">Examiner</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                            <label for="loginUserType">User Type</label>
+                                        </div>
+                                        <div class="text-center">
+                                            <button class="btn btn-primary btn-lg" type="submit">Login</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                                
+                                <div class="tab-pane fade <%= showSignupForm ? 'show active' : '' %>" id="signup" role="tabpanel" aria-labelledby="signup-tab">
+                                    <form id="signupForm" action="/users/register" method="POST">
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="signupUsername" name="username" type="text" placeholder="Enter your username..." required />
+                                            <label for="signupUsername">Username</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="signupPassword" name="password" type="password" placeholder="Enter your password..." required />
+                                            <label for="signupPassword">Password</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm your password..." required />
+                                            <label for="confirmPassword">Confirm Password</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <select class="form-control" id="userType" name="userType" required>
+                                                <option value="Driver">Driver</option>
+                                                <option value="Examiner">Examiner</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                            <label for="userType">User Type</label>
+                                        </div>
+                                        <div class="text-center">
+                                            <button class="btn btn-primary btn-lg" type="submit">Signup</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       
+        <%- include('layouts/footer'); -%>
+
+       
+        <%- include('layouts/script'); -%>
+    </body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+    <% if (session.userType === 'Driver' && session.testResult !== null) { %>
+        <div class="alert alert-info mt-3">
+            <strong>Examiner Comment:</strong> <%= session.examinerComment %><br>
+            <strong>Test Result:</strong> <%= session.testResult ? 'PASS ✅' : 'FAIL ❌' %>
+        </div>
+    <% } %>
+
+<head>
+    <%- include('layouts/header'); -%>
+</head>
+<body>
+    <%- include('layouts/navbar', { loggedIn, userType }); -%>
+
+    <header class="masthead" style="background-image: url('img/g22.png')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="page-heading">
+                        <h1>G2 Test</h1>
+                        <span class="subheading">Provide your information to take your test.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mt-5">
+        <% if (successMessage) { %>
+            <div class="alert alert-success text-center"><%= successMessage %></div>
+        <% } %>
+        <% if (error) { %>
+            <div class="alert alert-danger text-center"><%= error %></div>
+        <% } %>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="mb-4">User Information</h2>
+                <form id="userForm" action="/g2_page/submit" method="POST">
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="firstName" name="firstName" type="text" 
+                               value="<%= userData ? userData.firstname : '' %>" required>
+                        <label for="firstName">First Name</label>
+                    </div>
+                    <!-- Add other form fields similarly -->
+                    <button type="submit" class="btn btn-primary">Save Information</button>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <h2 class="mb-4">Book Appointment</h2>
+                <form class="mb-4">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="appointmentDate" 
+                               min="<%= new Date().toISOString().split('T')[0] %>"
+                               value="<%= selectedDate %>">
+                        <label for="appointmentDate">Select Date</label>
+                    </div>
+                </form>
+
+                <div class="time-slots">
+                    <% if (appointments.length > 0) { %>
+                        <h5>Available Slots for <%= displayDate %></h5>
+                        <% appointments.forEach(appt => { %>
+                            <form action="/g2_page/book/<%= appt._id %>" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-success m-1"><%= appt.time %></button>
+                            </form>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="alert alert-info">No available slots</div>
+                    <% } %>
+                </div>
+
+                <% if (userData && userData.appointmentId) { %>
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h5>Your Current Booking</h5>
+                        <p>Date: <%= new Date(userData.appointmentId.date).toLocaleDateString() %></p>
+                        <p>Time: <%= userData.appointmentId.time %></p>
+                        <form action="/g2_page/cancel/<%= userData.appointmentId._id %>" method="POST">
+                            <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                        </form>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    
+<div class="container mt-4">
+    <h3>Available Appointments</h3>
+    <% if (appointments.length > 0) { %>
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% appointments.forEach(slot => { %>
+                    <tr>
+                        <td><%= new Date(slot.date).toLocaleDateString() %></td>
+                        <td><%= slot.time %></td>
+                        <td><%= slot.location || 'N/A' %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>No available appointments.</p>
+    <% } %>
+</div>
+
+
+    <%- include('layouts/footer'); -%>
+    <%- include('layouts/script'); -%>
+
+    <script>
+        document.getElementById('appointmentDate').addEventListener('change', function() {
+            window.location.href = `/g2_page?date=${this.value}`;
+        });
+    </script>
+</body>
+</html>

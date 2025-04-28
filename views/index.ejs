@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('layouts/header') -%>
+    <body>
+        
+        <%- include('layouts/navbar') -%>
+        
+        <header class="masthead" style="background-image: url('img/homeImg.jpg')">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="site-heading">
+                            <h1>DASHBOARD</h1>
+                            <span class="subheading">DriverTesk Booking Kiosk </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+       
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    
+                    <% if (blogposts && blogposts.length > 0) { %>
+                        <% for (let i = 0; i < blogposts.length; i++) { %>
+                            <div class="post-preview">
+                                <a href="/post/<%= blogposts[i]._id %>">
+                                    <h2 class="post-title"><%= blogposts[i].title %></h2>
+                                    <h3 class="post-subtitle"><%= blogposts[i].body %></h3>
+                                </a>
+                                <p class="post-meta">
+                                    Posted on <%= blogposts[i].createdAt.toDateString() %>
+                                </p>
+                            </div>
+                            <hr class="my-4" />
+                        <% } %>
+                    <% } else { %>
+                        <p>No blog posts found.</p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        
+        <%- include('layouts/footer') -%>
+        
+        <%- include('layouts/script') -%>
+    </body>
+</html>

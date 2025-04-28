@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('layouts/header'); -%>
+    <style>
+        .time-slot-btn {
+            min-width: 80px;
+            margin: 5px;
+        }
+        .booked-slot {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <%- include('layouts/navbar', { loggedIn, userType }); -%>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('img/appointment.jpg')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="page-heading">
+                        <h1>Appointments</h1>
+                        <span class="subheading">Create and manage time slots</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <% if (error) { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <% if (success) { %>
+            <div class="alert alert-success"><%= success %></div>
+        <% } %>
+
+        <!-- Create Appointment Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Create New Time Slot</h4>
+            </div>
+            <div class="card-body">
+                <form action="/appointment/create" method="POST">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="date" name="date" 
+                                       min="<%= new Date().toISOString().split('T')[0] %>" required>
+                                <label for="date">Date</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label class="form-label">Available Time Slots (9:00 AM - 2:00 PM)</label>
+                                <div class="time-slots-container">
+                                    <% timeSlots.forEach(slot => { %>
+                                        <button type="button" class="btn btn-outline-primary time-slot-btn"
+                                                onclick="document.getElementById('time').value = '<%= slot %>'; 
+                                                         this.classList.add('btn-primary');
+                                                         document.querySelectorAll('.time-slot-btn').forEach(btn => {
+                                                             if(btn !== this) btn.classList.remove('btn-primary');
+                                                         });">
+                                            <%= slot %>
+                                        </button>
+                                    <% }); %>
+                                </div>
+                                <input type="hidden" id="time" name="time" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Slot</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Existing Appointments -->
+        <div class="card">
+            <div class="card-header">
+                <h4>Existing Time Slots</h4>
+            </div>
+            <div class="card-body">
+                <% if (appointments.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Booked By</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% appointments.forEach(appt => { %>
+                                    <tr class="<%= !appt.isTimeSlotAvailable ? 'booked-slot' : '' %>">
+                                        <td><%= appt.date %></td>
+                                        <td><%= appt.time %></td>
+                                        <td>
+                                            <span class="badge bg-<%= appt.isTimeSlotAvailable ? 'success' : 'danger' %>">
+                                                <%= appt.isTimeSlotAvailable ? 'Available' : 'Booked' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <%= appt.bookedBy ? appt.bookedBy.username : 'None' %>
+                                        </td>
+                                        <td>
+                                            <% if (appt.isTimeSlotAvailable) { %>
+                                                <form action="/appointment/<%= appt._id %>" method="POST" class="d-inline">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                </form>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <p class="text-center">No time slots available</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('layouts/footer'); -%>
+    <%- include('layouts/script'); -%>
+</body>
+</html>
+<div class="mt-5">
+    <h3>Test Results</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Driver Name</th>
+                <th>Test Type</th>
+                <th>Comment</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% results.forEach(driver => { %>
+                <tr>
+                    <td><%= driver.firstname %> <%= driver.lastname %></td>
+                    <td><%= driver.testType %></td>
+                    <td><%= driver.examinerComment %></td>
+                    <td><%= driver.testResult ? 'Pass' : 'Fail' %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>

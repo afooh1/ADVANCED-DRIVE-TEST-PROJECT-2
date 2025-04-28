@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('layouts/header'); -%>
+    </head>
+    <body>
+        
+        <%- include('layouts/navbar', { loggedIn, userType }); -%>
+
+       
+        <header class="masthead" style="background-image: url('img/create.jpg')">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="page-heading">
+                            <h1>Create Blog Post</h1>
+                            <span class="subheading">Share your thoughts with the world.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        
+        <div class="container mt-5">
+            <form action="/posts/store" method="POST" enctype="multipart/form-data">
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="title" name="title" type="text" placeholder="Enter blog title..." required />
+                    <label for="title">Title</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="body" name="body" placeholder="Enter blog content..." style="height: 200px" required></textarea>
+                    <label for="body">Content</label>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload Image</label>
+                    <input class="form-control" type="file" id="image" name="image" required />
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-primary btn-lg" type="submit">Create Post</button>
+                </div>
+            </form>
+        </div>
+
+        
+        <%- include('layouts/footer'); -%>
+
+       
+        <%- include('layouts/script'); -%>
+    </body>
+</html>

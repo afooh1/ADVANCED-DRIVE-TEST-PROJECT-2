@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('layouts/header'); -%>
+</head>
+<body>
+    <%- include('layouts/navbar', { loggedIn, userType }); -%>
+
+    <header class="masthead" style="background-image: url('img/appointment.jpg')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="page-heading">
+                        <h1>Examiner Dashboard</h1>
+                        <span class="subheading">Manage and evaluate driver test appointments</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mt-5">
+        <form method="GET" action="/examiner" class="mb-4">
+            <label for="type" class="form-label">Filter by Test Type:</label>
+            <select name="type" id="type" onchange="this.form.submit()" class="form-select w-auto d-inline-block ms-2">
+                <option value="">All</option>
+                <option value="G2" <%= selectedType === 'G2' ? 'selected' : '' %>>G2</option>
+                <option value="G" <%= selectedType === 'G' ? 'selected' : '' %>>G</option>
+            </select>
+        </form>
+
+        <% if (drivers.length > 0) { %>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Car Details</th>
+                            <th>Test Type</th>
+                            <th>Comment</th>
+                            <th>Pass/Fail</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% drivers.forEach(driver => { %>
+                            <tr>
+                                <form method="POST" action="/examiner/update/<%= driver._id %>">
+                                    <td><%= driver.firstname %> <%= driver.lastname %></td>
+                                    <td><%= driver.car_details.make %> <%= driver.car_details.model %> (<%= driver.car_details.year %>)</td>
+                                    <td><%= driver.testType %></td>
+
+                                    <!-- Comment textarea -->
+                                    <td>
+                                        <textarea name="comment" class="form-control" placeholder="Add comments"><%= driver.examinerComment %></textarea>
+                                    </td>
+
+                                    <!-- Pass/Fail dropdown -->
+                                    <td>
+                                        <select name="result" class="form-select" required>
+                                            <option value="">-- Select --</option>
+                                            <option value="pass" <%= driver.testResult === true ? 'selected' : '' %>>Pass</option>
+                                            <option value="fail" <%= driver.testResult === false ? 'selected' : '' %>>Fail</option>
+                                        </select>
+                                    </td>
+
+                                    <!-- Submit button -->
+                                    <td>
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </td>
+                                </form>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p>No drivers found for the selected filter.</p>
+        <% } %>
+    </div>
+
+    <%- include('layouts/footer'); -%>
+    <%- include('layouts/script'); -%>
+</body>
+</html>
